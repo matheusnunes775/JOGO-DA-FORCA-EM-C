@@ -1,40 +1,34 @@
-# 🕹️ Jogo da Forca em C
+# 🧠 Jogo da Forca com Charadas (GTK)
 
-Jogo da forca simples feito em linguagem C, jogado via terminal. O jogador 1 insere uma palavra secreta, e o jogador 2 tenta adivinhar letra por letra. O jogo exibe um boneco da forca conforme os erros acontecem.
-
----
-
-## 🚀 Melhorias implementadas
-
-- Oculta a palavra secreta (limpa a tela antes do jogo começar)
-- Suporte a palavras com espaços (ex: "linguagem c")
-- Desenho do boneco da forca conforme os erros
-- Visual limpo no terminal
-- Aceita apenas letras e evita repetições
+Um jogo da forca interativo com charadas inteligentes, desenvolvido em C com interface gráfica usando GTK+ 3.
 
 ---
 
-## 💻 Como compilar e executar
+## 🎮 Funcionalidades
 
-### Compilar:
+- 🧩 **Charadas aleatórias**: Você deve adivinhar a resposta da charada como em um jogo da forca.
+- 🧍 **Boneco desenhado**: A forca aparece gradualmente a cada erro.
+- 🔠 **Botões de letras**: Interface amigável com cliques para jogar, sem usar teclado.
+- 🧼 **Tela limpa e responsiva**: Organizada com charada, palavra oculta e status.
+- 🚫 **Evita letras repetidas**: Ignora cliques repetidos (e pode ser melhorado com botão desabilitado).
+- 🧑‍💻 **Código limpo e comentado**: Ideal para aprendizado de C com GTK.
+
+---
+
+## 📷 Captura de Tela (opcional)
+
+> (adicione aqui um print do jogo rodando com charada e boneco da forca)
+
+---
+
+## ⚙️ Como compilar
+
+Certifique-se de ter o GTK 3 instalado. Em sistemas baseados em Ubuntu:
 
 ```bash
-gcc jogo-da-forca.c -o jogo-da-forca
-./jogo-da-forca
+sudo apt install libgtk-3-dev
 
+gcc jogo-da-forca.c -o forca_gtk `pkg-config --cflags --libs gtk+-3.0`
 
-==== JOGO DA FORCA ====
-Digite a palavra secreta (sem acento): programação
-
-(Palavra oculta com tela limpa)
-
-Palavra: _ _ _ _ _ _ _ _ _ _
-Tentativas restantes: 6
-Digite uma letra: a
-
-Boa! Letra correta.
-
-Palavra: _ _ _ _ _ _ A _ _ _
-Tentativas restantes: 6
-...
+./forca_gtk
 
