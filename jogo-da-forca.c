@@ -1,13 +1,30 @@
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
+#include <stdlib.h>
 
 #define MAX_TENTATIVAS 6
-#define TAM_PALAVRA 30
+#define TAM_PALAVRA 100
+
+#ifdef _WIN32
+    #define CLEAR "cls"
+#else
+    #define CLEAR "clear"
+#endif
 
 void limparBuffer() {
     int c;
     while ((c = getchar()) != '\n' && c != EOF);
+}
+
+void desenharForca(int erros) {
+    printf("\n");
+    printf("  _______\n");
+    printf(" |       |\n");
+    printf(" |       %c\n", (erros >= 1) ? 'O' : ' ');
+    printf(" |      %c%c%c\n", (erros >= 3) ? '/' : ' ', (erros >= 2) ? '|' : ' ', (erros >= 4) ? '\\' : ' ');
+    printf(" |      %c %c\n", (erros >= 5) ? '/' : ' ', (erros >= 6) ? '\\' : ' ');
+    printf("_|_\n\n");
 }
 
 int letraJaUsada(char letra, char letrasUsadas[], int total) {
@@ -26,22 +43,32 @@ int main() {
     char chute;
 
     printf("==== JOGO DA FORCA ====\n");
-    printf("Digite a palavra secreta: ");
-    scanf("%s", palavra);
-    limparBuffer();
+    printf("Digite a palavra secreta (sem acento): ");
+
+    // Captura a palavra com espaços
+    fgets(palavra, TAM_PALAVRA, stdin);
+    palavra[strcspn(palavra, "\n")] = '\0'; // Remove o \n
+
+    system(CLEAR); // Limpa a tela
 
     int tamanho = strlen(palavra);
 
-    // Inicializa a exibição com underlines
+    // Inicializa o array de exibição
     for (int i = 0; i < tamanho; i++) {
-        exibicao[i] = '_';
+        if (palavra[i] == ' ')
+            exibicao[i] = ' ';
+        else
+            exibicao[i] = '_';
     }
     exibicao[tamanho] = '\0';
 
-    printf("\nA palavra tem %d letras.\n", tamanho);
+    printf("A palavra tem %d letras.\n", tamanho);
 
     while (tentativasRestantes > 0 && acertos < tamanho) {
-        printf("\nPalavra: ");
+        printf("\n");
+        desenharForca(MAX_TENTATIVAS - tentativasRestantes);
+
+        printf("Palavra: ");
         for (int i = 0; i < tamanho; i++) {
             printf("%c ", exibicao[i]);
         }
@@ -58,12 +85,12 @@ int main() {
         chute = tolower(chute);
 
         if (!isalpha(chute)) {
-            printf("Por favor, digite uma letra válida.\n");
+            printf("Digite apenas letras.\n");
             continue;
         }
 
         if (letraJaUsada(chute, letrasUsadas, letrasUsadasCount)) {
-            printf("Você já tentou essa letra. Tente outra.\n");
+            printf("Você já tentou essa letra.\n");
             continue;
         }
 
@@ -82,9 +109,11 @@ int main() {
             printf("Letra incorreta!\n");
             tentativasRestantes--;
         } else {
-            printf("Boa! Letra correta.\n");
+            printf("Letra correta!\n");
         }
     }
+
+    desenharForca(MAX_TENTATIVAS - tentativasRestantes);
 
     if (acertos == tamanho) {
         printf("\nParabéns! Você acertou a palavra: %s\n", palavra);
