@@ -2,6 +2,7 @@
 #include <string.h>
 #include <ctype.h>
 #include <stdlib.h>
+#include <time.h>
 
 #define MAX_TENTATIVAS 6
 #define TAM_PALAVRA 100
@@ -11,6 +12,13 @@
 #else
     #define CLEAR "clear"
 #endif
+
+// Lista de palavras para modo solo
+const char* listaPalavras[] = {
+    "computador", "programador", "terminal", "linguagem", "variavel",
+    "ponteiro", "compilador", "estruturas", "matriz", "funcoes"
+};
+const int totalPalavras = sizeof(listaPalavras) / sizeof(listaPalavras[0]);
 
 void limparBuffer() {
     int c;
@@ -35,37 +43,55 @@ int letraJaUsada(char letra, char letrasUsadas[], int total) {
     return 0;
 }
 
+void limparTela() {
+    system(CLEAR);
+}
+
+void exibirMensagemFinal(int venceu, const char* palavra) {
+    if (venceu) {
+        printf("\n🎉 Parabéns! Você acertou a palavra: %s\n", palavra);
+    } else {
+        printf("\n💀 Você perdeu! A palavra era: %s\n", palavra);
+    }
+}
+
+void escolherPalavra(char* palavra, int modoSolo) {
+    if (modoSolo) {
+        srand(time(NULL));
+        int index = rand() % totalPalavras;
+        strcpy(palavra, listaPalavras[index]);
+    } else {
+        printf("Digite a palavra secreta (sem acento): ");
+        fgets(palavra, TAM_PALAVRA, stdin);
+        palavra[strcspn(palavra, "\n")] = '\0';
+        limparTela(); // esconde palavra do segundo jogador
+    }
+}
+
 int main() {
     char palavra[TAM_PALAVRA], exibicao[TAM_PALAVRA];
     char letrasUsadas[26];
     int tentativasRestantes = MAX_TENTATIVAS;
     int acertos = 0, letrasUsadasCount = 0;
     char chute;
+    int modoSolo;
 
     printf("==== JOGO DA FORCA ====\n");
-    printf("Digite a palavra secreta (sem acento): ");
+    printf("1 - Jogar com palavra secreta\n");
+    printf("2 - Jogar com palavra aleatória (modo solo)\n");
+    printf("Escolha o modo (1 ou 2): ");
+    scanf("%d", &modoSolo);
+    limparBuffer();
 
-    // Captura a palavra com espaços
-    fgets(palavra, TAM_PALAVRA, stdin);
-    palavra[strcspn(palavra, "\n")] = '\0'; // Remove o \n
-
-    system(CLEAR); // Limpa a tela
-
+    escolherPalavra(palavra, modoSolo == 2);
     int tamanho = strlen(palavra);
 
-    // Inicializa o array de exibição
     for (int i = 0; i < tamanho; i++) {
-        if (palavra[i] == ' ')
-            exibicao[i] = ' ';
-        else
-            exibicao[i] = '_';
+        exibicao[i] = (palavra[i] == ' ') ? ' ' : '_';
     }
     exibicao[tamanho] = '\0';
 
-    printf("A palavra tem %d letras.\n", tamanho);
-
     while (tentativasRestantes > 0 && acertos < tamanho) {
-        printf("\n");
         desenharForca(MAX_TENTATIVAS - tentativasRestantes);
 
         printf("Palavra: ");
@@ -85,12 +111,12 @@ int main() {
         chute = tolower(chute);
 
         if (!isalpha(chute)) {
-            printf("Digite apenas letras.\n");
+            printf("Digite apenas letras válidas.\n");
             continue;
         }
 
         if (letraJaUsada(chute, letrasUsadas, letrasUsadasCount)) {
-            printf("Você já tentou essa letra.\n");
+            printf("Letra repetida! Tente outra.\n");
             continue;
         }
 
@@ -114,12 +140,7 @@ int main() {
     }
 
     desenharForca(MAX_TENTATIVAS - tentativasRestantes);
-
-    if (acertos == tamanho) {
-        printf("\nParabéns! Você acertou a palavra: %s\n", palavra);
-    } else {
-        printf("\nVocê perdeu! A palavra era: %s\n", palavra);
-    }
+    exibirMensagemFinal(acertos == tamanho, palavra);
 
     return 0;
 }
