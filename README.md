@@ -19,7 +19,8 @@ Jogo da forca simples feito em linguagem C, jogado via terminal. O jogador 1 ins
 ### Compilar:
 
 ```bash
-gcc forca.c -o forca
+gcc jogo-da-forca.c -o jogo-da-forca
+./jogo-da-forca
 
 
 ==== JOGO DA FORCA ====
