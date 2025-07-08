@@ -32,4 +32,4 @@ gcc jogo-da-forca.c -o forca_gtk `pkg-config --cflags --libs gtk+-3.0`
 
 ./forca_gtk
 
-teste
+
